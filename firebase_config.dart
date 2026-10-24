@@ -1,11 +1,12 @@
+
 import 'package:firebase_core/firebase_core.dart';
 
-// ====== YAHAN APNI 4 FIREBASE VALUES DAALEIN (google-services.json se) ======
-const _apiKey = 'PASTE_API_KEY_HERE';              // current_key
-const _appId = 'PASTE_APP_ID_HERE';                // mobilesdk_app_id
-const _senderId = 'PASTE_PROJECT_NUMBER_HERE';     // project_number
-const _projectId = 'PASTE_PROJECT_ID_HERE';        // project_id
-// ===========================================================================
+// ====== Firebase project: raodrsq ======
+const _apiKey = 'AIzaSyAvfftIm5A9Ji6uRqBQPvX2qpEts-eQo7w';
+const _appId = '1:255237821125:android:f86de92074961a2d63d6ac';
+const _senderId = '255237821125';
+const _projectId = 'raodrsq';
+// =======================================
 
 bool get firebaseConfigured => !_apiKey.startsWith('PASTE');
 
