@@ -1,0 +1,64 @@
+name: Build APK
+
+on:
+  workflow_dispatch:   # "Run workflow" button dabane par chalega
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      # 1. Naya khaali Flutter project banao (Android folder ke saath)
+      - name: Create base project
+        run: flutter create --org com.roadresq --project-name roadresq app
+
+      # 2. Hamari files uske andar rakho
+      - name: Copy our code
+        run: |
+          cp pubspec.yaml app/pubspec.yaml
+          cp *.dart app/lib/
+
+      # 3. Android permissions (GPS + internet + Maps link) jodo
+      - name: Patch AndroidManifest
+        run: |
+          python3 - <<'EOF'
+          p = "app/android/app/src/main/AndroidManifest.xml"
+          s = open(p).read()
+          perms = ('<uses-permission android:name="android.permission.INTERNET"/>\n'
+                   '    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>\n'
+                   '    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>\n'
+                   '    <application')
+          s = s.replace("<application", perms, 1)
+          s = s.replace("<queries>",
+              '<queries>\n        <intent><action android:name="android.intent.action.VIEW"/><data android:scheme="https"/></intent>', 1)
+          open(p, "w").write(s)
+          EOF
+
+      # 3b. Firebase ke liye minSdk 24
+      - name: Set minSdk
+        run: |
+          sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' app/android/app/build.gradle.kts || true
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/' app/android/app/build.gradle || true
+
+      # 4. Packages download + APK build
+      - name: Build APK
+        working-directory: app
+        run: |
+          flutter pub get
+          flutter build apk --release
+
+      # 5. APK ko download ke liye rakho
+      - uses: actions/upload-artifact@v4
+        with:
+          name: roadresq-apk
+          path: app/build/app/outputs/flutter-apk/app-release.apk

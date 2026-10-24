@@ -1,0 +1,25 @@
+name: roadresq
+description: RoadResQ - Emergency roadside assistance
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1      # Barlow font (prototype jaisa)
+  geolocator: ^13.0.1       # GPS location
+  url_launcher: ^6.3.1      # Google Maps navigation kholne ke liye
+  firebase_core: ^4.12.1    # Firebase
+  firebase_auth: ^6.5.6     # Login/Register
+  cloud_firestore: ^6.7.1   # Database
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
